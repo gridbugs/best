@@ -66,9 +66,7 @@ pub struct BestMap<K: PartialOrd, V> {
 
 impl<K: PartialOrd, V> BestMap<K, V> {
     pub fn new() -> Self {
-        Self {
-            non_empty: None,
-        }
+        Self { non_empty: None }
     }
 
     pub fn insert_gt(&mut self, key: K, value: V) {
@@ -112,6 +110,9 @@ impl<K: PartialOrd, V> BestMap<K, V> {
     }
 
     pub fn len(&self) -> usize {
-        self.non_empty.as_ref().map(BestMapNonEmpty::len).unwrap_or(0)
+        self.non_empty
+            .as_ref()
+            .map(BestMapNonEmpty::len)
+            .unwrap_or(0)
     }
 }
