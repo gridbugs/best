@@ -3,13 +3,13 @@ extern crate serde;
 extern crate serde_derive;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct BestMapNonEmpty<K: Ord, V> {
+pub struct BestMapNonEmpty<K: PartialOrd, V> {
     key: K,
     value: V,
     len: usize,
 }
 
-impl<K: Ord, V> BestMapNonEmpty<K, V> {
+impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
     pub fn new(key: K, value: V) -> Self {
         BestMapNonEmpty {
             key: key,
@@ -60,11 +60,11 @@ impl<K: Ord, V> BestMapNonEmpty<K, V> {
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
-pub struct BestMap<K: Ord, V> {
+pub struct BestMap<K: PartialOrd, V> {
     non_empty: Option<BestMapNonEmpty<K, V>>,
 }
 
-impl<K: Ord, V> BestMap<K, V> {
+impl<K: PartialOrd, V> BestMap<K, V> {
     pub fn new() -> Self {
         Self {
             non_empty: None,
