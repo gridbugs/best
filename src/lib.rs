@@ -34,6 +34,22 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
         self.len += 1;
     }
 
+    pub fn insert_lt(&mut self, key: K, value: V) {
+        if key < self.key {
+            self.key = key;
+            self.value = value;
+        }
+        self.len += 1;
+    }
+
+    pub fn insert_le(&mut self, key: K, value: V) {
+        if key <= self.key {
+            self.key = key;
+            self.value = value;
+        }
+        self.len += 1;
+    }
+
     pub fn get(&self) -> (&K, &V) {
         (&self.key, &self.value)
     }
@@ -80,6 +96,22 @@ impl<K: PartialOrd, V> BestMap<K, V> {
     pub fn insert_ge(&mut self, key: K, value: V) {
         if let Some(non_empty) = self.non_empty.as_mut() {
             non_empty.insert_ge(key, value);
+            return;
+        }
+        self.non_empty = Some(BestMapNonEmpty::new(key, value));
+    }
+
+    pub fn insert_lt(&mut self, key: K, value: V) {
+        if let Some(non_empty) = self.non_empty.as_mut() {
+            non_empty.insert_lt(key, value);
+            return;
+        }
+        self.non_empty = Some(BestMapNonEmpty::new(key, value));
+    }
+
+    pub fn insert_le(&mut self, key: K, value: V) {
+        if let Some(non_empty) = self.non_empty.as_mut() {
+            non_empty.insert_le(key, value);
             return;
         }
         self.non_empty = Some(BestMapNonEmpty::new(key, value));
