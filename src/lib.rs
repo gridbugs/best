@@ -147,6 +147,10 @@ impl<K: PartialOrd, V> BestMap<K, V> {
             .map(BestMapNonEmpty::len)
             .unwrap_or(0)
     }
+
+    pub fn is_empty(&self) -> bool {
+        self.non_empty.is_none()
+    }
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
@@ -206,6 +210,9 @@ impl<T: PartialOrd> BestSet<T> {
     }
     pub fn len(&self) -> usize {
         self.0.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 }
 
