@@ -148,3 +148,64 @@ impl<K: PartialOrd, V> BestMap<K, V> {
             .unwrap_or(0)
     }
 }
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct BestSetNonEmpty<T: PartialOrd>(BestMapNonEmpty<T, ()>);
+
+impl<T: PartialOrd> BestSetNonEmpty<T> {
+    pub fn new(value: T) -> Self {
+        BestSetNonEmpty(BestMapNonEmpty::new(value, ()))
+    }
+    pub fn insert_gt(&mut self, value: T) {
+        self.0.insert_gt(value, ());
+    }
+    pub fn insert_ge(&mut self, value: T) {
+        self.0.insert_ge(value, ());
+    }
+    pub fn insert_lt(&mut self, value: T) {
+        self.0.insert_lt(value, ());
+    }
+    pub fn insert_le(&mut self, value: T) {
+        self.0.insert_le(value, ());
+    }
+    pub fn get(&self) -> &T {
+        self.0.key()
+    }
+    pub fn into(self) -> T {
+        self.0.into_key()
+    }
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct BestSet<T: PartialOrd>(BestMap<T, ()>);
+
+impl<T: PartialOrd> BestSet<T> {
+    pub fn new() -> Self {
+        BestSet(BestMap::new())
+    }
+    pub fn insert_gt(&mut self, value: T) {
+        self.0.insert_gt(value, ());
+    }
+    pub fn insert_ge(&mut self, value: T) {
+        self.0.insert_ge(value, ());
+    }
+    pub fn insert_lt(&mut self, value: T) {
+        self.0.insert_lt(value, ());
+    }
+    pub fn insert_le(&mut self, value: T) {
+        self.0.insert_le(value, ());
+    }
+    pub fn get(&self) -> Option<&T> {
+        self.0.key()
+    }
+    pub fn into(self) -> Option<T> {
+        self.0.into_key()
+    }
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+

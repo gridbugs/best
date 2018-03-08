@@ -1,7 +1,7 @@
 [package]
 name = "best"
 description = "Utility for getting the best value of a sequence with an associated value"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Stephen Sherratt <sfsherratt@gmail.com>"]
 license = "MIT"
 documentation = "https://docs.rs/best"
