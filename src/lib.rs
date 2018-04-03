@@ -60,7 +60,7 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
         &self.value
     }
 
-    pub fn into(self) -> (K, V) {
+    pub fn into_key_and_value(self) -> (K, V) {
         (self.key, self.value)
     }
     pub fn into_key(self) -> K {
@@ -129,7 +129,7 @@ impl<K: PartialOrd, V> BestMap<K, V> {
         self.non_empty.as_ref().map(BestMapNonEmpty::value)
     }
 
-    pub fn into(self) -> Option<(K, V)> {
+    pub fn into_key_and_value(self) -> Option<(K, V)> {
         self.non_empty.map(BestMapNonEmpty::into)
     }
 
@@ -175,7 +175,7 @@ impl<T: PartialOrd> BestSetNonEmpty<T> {
     pub fn get(&self) -> &T {
         self.0.key()
     }
-    pub fn into(self) -> T {
+    pub fn into_value(self) -> T {
         self.0.into_key()
     }
     pub fn len(&self) -> usize {
@@ -205,7 +205,7 @@ impl<T: PartialOrd> BestSet<T> {
     pub fn get(&self) -> Option<&T> {
         self.0.key()
     }
-    pub fn into(self) -> Option<T> {
+    pub fn into_value(self) -> Option<T> {
         self.0.into_key()
     }
     pub fn len(&self) -> usize {
