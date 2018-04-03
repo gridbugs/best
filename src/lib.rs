@@ -130,7 +130,7 @@ impl<K: PartialOrd, V> BestMap<K, V> {
     }
 
     pub fn into_key_and_value(self) -> Option<(K, V)> {
-        self.non_empty.map(BestMapNonEmpty::into)
+        self.non_empty.map(BestMapNonEmpty::into_key_and_value)
     }
 
     pub fn into_key(self) -> Option<K> {
