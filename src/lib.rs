@@ -1,20 +1,19 @@
-extern crate serde;
+#[cfg(feature = "serde")]
 #[macro_use]
-extern crate serde_derive;
+extern crate serde;
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy)]
 pub struct BestMapNonEmpty<K: PartialOrd, V> {
     key: K,
     value: V,
-    len: usize,
 }
 
 impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
     pub fn new(key: K, value: V) -> Self {
-        BestMapNonEmpty {
+        Self {
             key: key,
             value: value,
-            len: 1,
         }
     }
 
@@ -23,7 +22,6 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
             self.key = key;
             self.value = value;
         }
-        self.len += 1;
     }
 
     pub fn insert_ge(&mut self, key: K, value: V) {
@@ -31,7 +29,6 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
             self.key = key;
             self.value = value;
         }
-        self.len += 1;
     }
 
     pub fn insert_lt(&mut self, key: K, value: V) {
@@ -39,7 +36,6 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
             self.key = key;
             self.value = value;
         }
-        self.len += 1;
     }
 
     pub fn insert_le(&mut self, key: K, value: V) {
@@ -47,7 +43,6 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
             self.key = key;
             self.value = value;
         }
-        self.len += 1;
     }
 
     pub fn get(&self) -> (&K, &V) {
@@ -69,13 +64,10 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
     pub fn into_value(self) -> V {
         self.value
     }
-
-    pub fn len(&self) -> usize {
-        self.len
-    }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy)]
 pub struct BestMap<K: PartialOrd, V> {
     non_empty: Option<BestMapNonEmpty<K, V>>,
 }
@@ -141,19 +133,13 @@ impl<K: PartialOrd, V> BestMap<K, V> {
         self.non_empty.map(BestMapNonEmpty::into_value)
     }
 
-    pub fn len(&self) -> usize {
-        self.non_empty
-            .as_ref()
-            .map(BestMapNonEmpty::len)
-            .unwrap_or(0)
-    }
-
     pub fn is_empty(&self) -> bool {
         self.non_empty.is_none()
     }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy)]
 pub struct BestSetNonEmpty<T: PartialOrd>(BestMapNonEmpty<T, ()>);
 
 impl<T: PartialOrd> BestSetNonEmpty<T> {
@@ -178,12 +164,10 @@ impl<T: PartialOrd> BestSetNonEmpty<T> {
     pub fn into_value(self) -> T {
         self.0.into_key()
     }
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone, Copy)]
 pub struct BestSet<T: PartialOrd>(BestMap<T, ()>);
 
 impl<T: PartialOrd> BestSet<T> {
@@ -208,11 +192,7 @@ impl<T: PartialOrd> BestSet<T> {
     pub fn into_value(self) -> Option<T> {
         self.0.into_key()
     }
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
 }
-
