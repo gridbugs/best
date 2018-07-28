@@ -4,19 +4,12 @@ extern crate serde;
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
-pub struct BestMapNonEmpty<K: PartialOrd, V> {
+pub struct BestMapNonEmpty<K, V> {
     key: K,
     value: V,
 }
 
 impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
-    pub fn new(key: K, value: V) -> Self {
-        Self {
-            key: key,
-            value: value,
-        }
-    }
-
     pub fn insert_gt(&mut self, key: K, value: V) {
         if key > self.key {
             self.key = key;
@@ -44,6 +37,15 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
             self.value = value;
         }
     }
+}
+
+impl<K, V> BestMapNonEmpty<K, V> {
+    pub fn new(key: K, value: V) -> Self {
+        Self {
+            key: key,
+            value: value,
+        }
+    }
 
     pub fn get(&self) -> (&K, &V) {
         (&self.key, &self.value)
@@ -68,15 +70,11 @@ impl<K: PartialOrd, V> BestMapNonEmpty<K, V> {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
-pub struct BestMap<K: PartialOrd, V> {
+pub struct BestMap<K, V> {
     non_empty: Option<BestMapNonEmpty<K, V>>,
 }
 
 impl<K: PartialOrd, V> BestMap<K, V> {
-    pub fn new() -> Self {
-        Self { non_empty: None }
-    }
-
     pub fn insert_gt(&mut self, key: K, value: V) {
         if let Some(non_empty) = self.non_empty.as_mut() {
             non_empty.insert_gt(key, value);
@@ -107,6 +105,12 @@ impl<K: PartialOrd, V> BestMap<K, V> {
             return;
         }
         self.non_empty = Some(BestMapNonEmpty::new(key, value));
+    }
+}
+
+impl<K, V> BestMap<K, V> {
+    pub fn new() -> Self {
+        Self { non_empty: None }
     }
 
     pub fn get(&self) -> Option<(&K, &V)> {
@@ -140,12 +144,9 @@ impl<K: PartialOrd, V> BestMap<K, V> {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
-pub struct BestSetNonEmpty<T: PartialOrd>(BestMapNonEmpty<T, ()>);
+pub struct BestSetNonEmpty<T>(BestMapNonEmpty<T, ()>);
 
 impl<T: PartialOrd> BestSetNonEmpty<T> {
-    pub fn new(value: T) -> Self {
-        BestSetNonEmpty(BestMapNonEmpty::new(value, ()))
-    }
     pub fn insert_gt(&mut self, value: T) {
         self.0.insert_gt(value, ());
     }
@@ -157,6 +158,12 @@ impl<T: PartialOrd> BestSetNonEmpty<T> {
     }
     pub fn insert_le(&mut self, value: T) {
         self.0.insert_le(value, ());
+    }
+}
+
+impl<T> BestSetNonEmpty<T> {
+    pub fn new(value: T) -> Self {
+        BestSetNonEmpty(BestMapNonEmpty::new(value, ()))
     }
     pub fn get(&self) -> &T {
         self.0.key()
@@ -168,12 +175,9 @@ impl<T: PartialOrd> BestSetNonEmpty<T> {
 
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
-pub struct BestSet<T: PartialOrd>(BestMap<T, ()>);
+pub struct BestSet<T>(BestMap<T, ()>);
 
 impl<T: PartialOrd> BestSet<T> {
-    pub fn new() -> Self {
-        BestSet(BestMap::new())
-    }
     pub fn insert_gt(&mut self, value: T) {
         self.0.insert_gt(value, ());
     }
@@ -185,6 +189,12 @@ impl<T: PartialOrd> BestSet<T> {
     }
     pub fn insert_le(&mut self, value: T) {
         self.0.insert_le(value, ());
+    }
+}
+
+impl<T> BestSet<T> {
+    pub fn new() -> Self {
+        BestSet(BestMap::new())
     }
     pub fn get(&self) -> Option<&T> {
         self.0.key()
