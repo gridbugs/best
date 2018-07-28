@@ -116,6 +116,11 @@ impl<K, V> BestMapNonEmpty<K, V> {
 pub struct BestMap<K, V> {
     non_empty: Option<BestMapNonEmpty<K, V>>,
 }
+impl<K, V> Default for BestMap<K, V> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl<K: PartialOrd, V> BestMap<K, V> {
     pub fn insert_gt(&mut self, key: K, value: V) {
@@ -288,6 +293,11 @@ impl<T> BestSetNonEmpty<T> {
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
 pub struct BestSet<T>(BestMap<T, ()>);
+impl<T> Default for BestSet<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl<T: PartialOrd> BestSet<T> {
     pub fn insert_gt(&mut self, value: T) {
@@ -341,5 +351,49 @@ impl<T> BestSet<T> {
     }
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[derive(Debug, Clone)]
+pub struct BestMultiSet<T>(Vec<T>);
+impl<T> Default for BestMultiSet<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+pub type BestMultiSetIter<'a, T> = ::std::slice::Iter<'a, T>;
+
+impl<T> BestMultiSet<T> {
+    pub fn new() -> Self {
+        BestMultiSet(Vec::new())
+    }
+    pub fn iter(&self) -> BestMultiSetIter<T> {
+        self.0.iter()
+    }
+    pub fn clear(&mut self) {
+        self.0.clear();
+    }
+}
+
+impl<T: PartialOrd> BestMultiSet<T> {
+    fn replace_with_single(&mut self, value: T) {
+        self.0.clear();
+        self.0.push(value);
+    }
+    pub fn insert_lt(&mut self, value: T) {
+        match self.0.first().map(|v| value.partial_cmp(v)) {
+            None | Some(Some(Ordering::Equal)) => self.0.push(value),
+            Some(None) | Some(Some(Ordering::Greater)) => (),
+            Some(Some(Ordering::Less)) => self.replace_with_single(value),
+        }
+    }
+    pub fn insert_gt(&mut self, value: T) {
+        match self.0.first().map(|v| value.partial_cmp(v)) {
+            None | Some(Some(Ordering::Equal)) => self.0.push(value),
+            Some(None) | Some(Some(Ordering::Less)) => (),
+            Some(Some(Ordering::Greater)) => self.replace_with_single(value),
+        }
     }
 }
