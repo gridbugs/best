@@ -375,6 +375,9 @@ impl<T> BestMultiSet<T> {
     pub fn clear(&mut self) {
         self.0.clear();
     }
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
 }
 
 impl<T: PartialOrd> BestMultiSet<T> {
