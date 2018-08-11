@@ -372,6 +372,9 @@ impl<T> BestMultiSet<T> {
     pub fn iter(&self) -> BestMultiSetIter<T> {
         self.0.iter()
     }
+    pub fn first(&self) -> Option<&T> {
+        self.0.first()
+    }
     pub fn clear(&mut self) {
         self.0.clear();
     }
@@ -398,5 +401,13 @@ impl<T: PartialOrd> BestMultiSet<T> {
             Some(None) | Some(Some(Ordering::Less)) => (),
             Some(Some(Ordering::Greater)) => self.replace_with_single(value),
         }
+    }
+}
+
+impl<'a, T> IntoIterator for &'a BestMultiSet<T> {
+    type Item = &'a T;
+    type IntoIter = BestMultiSetIter<'a, T>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
     }
 }
