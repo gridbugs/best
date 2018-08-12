@@ -252,13 +252,33 @@ impl<T> BestMultiSet<T> {
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
-}
-
-impl<T: PartialOrd> BestMultiSet<T> {
     fn replace_with_single(&mut self, value: T) {
         self.0.clear();
         self.0.push(value);
     }
+    pub fn insert_lt_by<F>(&mut self, value: T, mut compare: F)
+    where
+        F: FnMut(&T, &T) -> Ordering,
+    {
+        match self.0.first().map(|v| compare(&value, v)) {
+            None | Some(Ordering::Equal) => self.0.push(value),
+            Some(Ordering::Less) => self.replace_with_single(value),
+            Some(Ordering::Greater) => (),
+        }
+    }
+    pub fn insert_gt_by<F>(&mut self, value: T, mut compare: F)
+    where
+        F: FnMut(&T, &T) -> Ordering,
+    {
+        match self.0.first().map(|v| compare(&value, v)) {
+            None | Some(Ordering::Equal) => self.0.push(value),
+            Some(Ordering::Greater) => self.replace_with_single(value),
+            Some(Ordering::Less) => (),
+        }
+    }
+}
+
+impl<T: PartialOrd> BestMultiSet<T> {
     pub fn insert_lt(&mut self, value: T) {
         match self.0.first().map(|v| value.partial_cmp(v)) {
             None | Some(Some(Ordering::Equal)) => self.0.push(value),
