@@ -364,6 +364,7 @@ impl<T> Default for BestMultiSet<T> {
 }
 
 pub type BestMultiSetIter<'a, T> = ::std::slice::Iter<'a, T>;
+pub type BestMultiSetDrain<'a, T> = ::std::vec::Drain<'a, T>;
 
 impl<T> BestMultiSet<T> {
     pub fn new() -> Self {
@@ -371,6 +372,9 @@ impl<T> BestMultiSet<T> {
     }
     pub fn iter(&self) -> BestMultiSetIter<T> {
         self.0.iter()
+    }
+    pub fn drain(&mut self) -> BestMultiSetDrain<T> {
+        self.0.drain(..)
     }
     pub fn first(&self) -> Option<&T> {
         self.0.first()
