@@ -50,46 +50,6 @@ impl<K, V> BestMapNonEmpty<K, V> {
         self.value = value;
     }
 
-    pub fn insert_lt_cmp<F>(&mut self, key: K, value: V, mut cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        match cmp(&key) {
-            Ordering::Less => self.insert(key, value),
-            Ordering::Equal | Ordering::Greater => (),
-        }
-    }
-
-    pub fn insert_le_cmp<F>(&mut self, key: K, value: V, mut cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        match cmp(&key) {
-            Ordering::Less | Ordering::Equal => self.insert(key, value),
-            Ordering::Greater => (),
-        }
-    }
-
-    pub fn insert_gt_cmp<F>(&mut self, key: K, value: V, mut cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        match cmp(&key) {
-            Ordering::Greater => self.insert(key, value),
-            Ordering::Equal | Ordering::Less => (),
-        }
-    }
-
-    pub fn insert_ge_cmp<F>(&mut self, key: K, value: V, mut cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        match cmp(&key) {
-            Ordering::Greater | Ordering::Equal => self.insert(key, value),
-            Ordering::Less => (),
-        }
-    }
-
     pub fn get(&self) -> (&K, &V) {
         (&self.key, &self.value)
     }
@@ -161,50 +121,6 @@ impl<K, V> BestMap<K, V> {
         Self { non_empty: None }
     }
 
-    pub fn insert_lt_cmp<F>(&mut self, key: K, value: V, cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        if let Some(non_empty) = self.non_empty.as_mut() {
-            non_empty.insert_lt_cmp(key, value, cmp);
-            return;
-        }
-        self.non_empty = Some(BestMapNonEmpty::new(key, value));
-    }
-
-    pub fn insert_le_cmp<F>(&mut self, key: K, value: V, cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        if let Some(non_empty) = self.non_empty.as_mut() {
-            non_empty.insert_le_cmp(key, value, cmp);
-            return;
-        }
-        self.non_empty = Some(BestMapNonEmpty::new(key, value));
-    }
-
-    pub fn insert_gt_cmp<F>(&mut self, key: K, value: V, cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        if let Some(non_empty) = self.non_empty.as_mut() {
-            non_empty.insert_gt_cmp(key, value, cmp);
-            return;
-        }
-        self.non_empty = Some(BestMapNonEmpty::new(key, value));
-    }
-
-    pub fn insert_ge_cmp<F>(&mut self, key: K, value: V, cmp: F)
-    where
-        F: FnMut(&K) -> Ordering,
-    {
-        if let Some(non_empty) = self.non_empty.as_mut() {
-            non_empty.insert_ge_cmp(key, value, cmp);
-            return;
-        }
-        self.non_empty = Some(BestMapNonEmpty::new(key, value));
-    }
-
     pub fn get(&self) -> Option<(&K, &V)> {
         self.non_empty.as_ref().map(BestMapNonEmpty::get)
     }
@@ -257,30 +173,6 @@ impl<T> BestSetNonEmpty<T> {
     pub fn new(value: T) -> Self {
         BestSetNonEmpty(BestMapNonEmpty::new(value, ()))
     }
-    pub fn insert_lt_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_lt_cmp(value, (), cmp);
-    }
-    pub fn insert_le_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_le_cmp(value, (), cmp);
-    }
-    pub fn insert_gt_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_gt_cmp(value, (), cmp);
-    }
-    pub fn insert_ge_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_ge_cmp(value, (), cmp);
-    }
 
     pub fn get(&self) -> &T {
         self.0.key()
@@ -318,31 +210,6 @@ impl<T> BestSet<T> {
     pub fn new() -> Self {
         BestSet(BestMap::new())
     }
-    pub fn insert_lt_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_lt_cmp(value, (), cmp);
-    }
-    pub fn insert_le_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_le_cmp(value, (), cmp);
-    }
-    pub fn insert_gt_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_gt_cmp(value, (), cmp);
-    }
-    pub fn insert_ge_cmp<F>(&mut self, value: T, cmp: F)
-    where
-        F: FnMut(&T) -> Ordering,
-    {
-        self.0.insert_ge_cmp(value, (), cmp);
-    }
-
     pub fn get(&self) -> Option<&T> {
         self.0.key()
     }
