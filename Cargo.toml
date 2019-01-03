@@ -1,13 +1,16 @@
 [package]
 name = "best"
 description = "Utility for getting the best value of a sequence with an associated value"
-version = "0.12.0"
+version = "0.13.0"
 authors = ["Stephen Sherratt <sfsherratt@gmail.com>"]
 license = "MIT"
 documentation = "https://docs.rs/best"
 repository = "https://github.com/stevebob/best.git"
 homepage = "https://github.com/stevebob/best.git"
 readme = "README.md"
+
+[features]
+serialize = ["serde"]
 
 [dependencies]
 serde = { version = "1.0", features = ["serde_derive"], optional = true }

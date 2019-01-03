@@ -1,10 +1,10 @@
-#[cfg(feature = "serde")]
+#[cfg(feature = "serialize")]
 #[macro_use]
 extern crate serde;
 
 use std::cmp::Ordering;
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
 pub struct BestMapNonEmpty<K, V> {
     key: K,
@@ -71,7 +71,7 @@ impl<K, V> BestMapNonEmpty<K, V> {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
 pub struct BestMap<K, V> {
     non_empty: Option<BestMapNonEmpty<K, V>>,
@@ -150,7 +150,7 @@ impl<K, V> BestMap<K, V> {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
 pub struct BestSetNonEmpty<T>(BestMapNonEmpty<T, ()>);
 
@@ -182,7 +182,7 @@ impl<T> BestSetNonEmpty<T> {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone, Copy)]
 pub struct BestSet<T>(BestMap<T, ()>);
 impl<T> Default for BestSet<T> {
@@ -221,7 +221,7 @@ impl<T> BestSet<T> {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
 #[derive(Debug, Clone)]
 pub struct BestMultiSet<T>(Vec<T>);
 impl<T> Default for BestMultiSet<T> {
